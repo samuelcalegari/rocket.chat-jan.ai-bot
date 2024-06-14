@@ -8,7 +8,7 @@
     "start": "node --env-file=.env server.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Samuel Calegari",
   "license": "ISC",
   "dependencies": {
     "@rocket.chat/sdk": "^0.2.9-2",
