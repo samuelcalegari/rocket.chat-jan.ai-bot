@@ -1,0 +1,28 @@
+# rocket.chat / jan.ai / bot
+<p align="center">
+    <img src="https://img.shields.io/badge/version-1.3.3-blue">
+    <img src="https://img.shields.io/badge/python-3.11-orange">
+    <img src="https://img.shields.io/badge/nodeJS-20.x-orange">
+    <img src="https://img.shields.io/badge/license-ISC-green">
+</p>
+
+## Features
+
+Provide a bot for the Rocket.Chat platform that can interact with the Jan.ai platform
+
+## Installation
+
+```bash npm install```
+
+## Requirements
+- [x] Install Rocket.Chat Server (https://github.com/RocketChat/Rocket.Chat)
+- [x] Install 👋 Jan.ai Server (https://github.com/janhq/jan/)
+- [x] Add a bot user in Rocket.Chat
+- [x] Fill the .env file with your own parameters
+- [x] Start project with the command 
+```bash npm start```
+
+
+## Licence
+
+Released under the [ISC Licence](https://opensource.org/licenses/ISC)
