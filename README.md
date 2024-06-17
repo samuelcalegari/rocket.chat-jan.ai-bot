@@ -1,4 +1,4 @@
-# rocket.chat / jan.ai / bot
+# A Smart AI Chatbot for Rocket.Chat
 <p align="center">
     <img src="https://img.shields.io/badge/version-1.3.3-blue">
     <img src="https://img.shields.io/badge/python-3.11-orange">
