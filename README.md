@@ -8,11 +8,11 @@
 
 ## Features
 
-Provide a bot for the Rocket.Chat platform that can interact with the Jan.ai platform
+Provide a chatbot for the Rocket.Chat platform that can interact with the Jan.ai platform
 
 ## Installation
 
-```bash npm install```
+```npm install```
 
 ## Requirements
 - [x] Install Rocket.Chat Server (https://github.com/RocketChat/Rocket.Chat)
@@ -20,7 +20,7 @@ Provide a bot for the Rocket.Chat platform that can interact with the Jan.ai pla
 - [x] Add a bot user in Rocket.Chat
 - [x] Fill the .env file with your own parameters
 - [x] Start project with the command 
-```bash npm start```
+```npm start```
 
 
 ## Licence
