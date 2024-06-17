@@ -65,14 +65,11 @@ const processMessages = async (err, message, messageOptions) => {
         })
             .then(function (response) {
                 // handle success
-                res = response.data.split("data: ")
-                for (let i = 0; i < res.length; i++) {
+                response.data.split("data: ").forEach(item => {
                     try {
-                        const obj = JSON.parse(res[i]);
-                        msg += obj.choices[0].delta.content;
-                    } catch (error) {
-                    }
-                }
+                        msg += JSON.parse(item).choices[0].delta.content;
+                    } catch (error) {}
+                });
             })
 
         // remove <s> and </s> tags
