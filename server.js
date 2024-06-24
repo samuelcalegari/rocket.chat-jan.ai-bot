@@ -8,6 +8,7 @@ const ROCKETCHAT_PWD = process.env.ROCKETCHAT_PWD;
 const ROCKETCHAT_BOTNAME = process.env.ROCKETCHAT_BOTNAME;
 const ROCKETCHAT_SSL = process.env.ROCKETCHAT_SSL === 'true';
 const ROCKETCHAT_ROOMS = process.env.ROCKETCHAT_ROOMS.split(',');
+const ROCKETCHAT_BOT_MODE_RESPONDING = process.env.ROCKETCHAT_BOT_MODE_RESPONDING;
 const JAN_HOST = process.env.JAN_HOST;
 const JAN_MODEL = process.env.JAN_MODEL;
 let myUserId;
@@ -32,11 +33,24 @@ const runbot = async () => {
 
 // Process messages
 const processMessages = async (err, message, messageOptions) => {
+
     let msg = "";
+    let sendResponse = true;
     if (!err) {
 
         // if not a message or the bot's own message, ignore it
-        if (message.u._id === myUserId) return;
+        if (message.u._id === myUserId) sendResponse = false;
+
+        // if bot mode responding is mention, and the bot is not mentioned in canal ignore it
+        if(ROCKETCHAT_ROOMS.includes(messageOptions.roomName) && ROCKETCHAT_BOT_MODE_RESPONDING === 'only_mentions') {
+            sendResponse = message.mentions?.some(mention => mention.username === ROCKETCHAT_BOTNAME) || false;
+
+            if(sendResponse)
+                // remove bot mention from message
+                message.msg = message.msg.replace('@'+ROCKETCHAT_BOTNAME, '');
+        }
+
+        if(!sendResponse) return;
 
         // get room name
         const roomname = await driver.getRoomName(message.rid);
