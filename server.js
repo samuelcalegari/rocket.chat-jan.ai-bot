@@ -12,6 +12,7 @@ const ROCKETCHAT_BOT_MODE_RESPONDING = process.env.ROCKETCHAT_BOT_MODE_RESPONDIN
 const JAN_HOST = process.env.JAN_HOST;
 const JAN_MODEL = process.env.JAN_MODEL;
 let myUserId;
+const messages = [];
 
 // Bot configuration
 const runbot = async () => {
@@ -33,7 +34,7 @@ const runbot = async () => {
 
 // Process messages
 const processMessages = async (err, message, messageOptions) => {
-
+    const singleMessage = [];
     let msg = "";
     let sendResponse = true;
     if (!err) {
@@ -41,13 +42,28 @@ const processMessages = async (err, message, messageOptions) => {
         // if not a message or the bot's own message, ignore it
         if (message.u._id === myUserId) sendResponse = false;
 
-        // if bot mode responding is mention, and the bot is not mentioned in canal ignore it
-        if(ROCKETCHAT_ROOMS.includes(messageOptions.roomName) && ROCKETCHAT_BOT_MODE_RESPONDING === 'only_mentions') {
-            sendResponse = message.mentions?.some(mention => mention.username === ROCKETCHAT_BOTNAME) || false;
+        // if in canal mode or direct message mode
+        if (ROCKETCHAT_ROOMS.includes(messageOptions.roomName)) {
+            // if in only_mentions responding mode
+            if (ROCKETCHAT_BOT_MODE_RESPONDING === 'only_mentions') {
+                sendResponse = message.mentions?.some(mention => mention.username === ROCKETCHAT_BOTNAME) || false;
 
-            if(sendResponse)
-                // remove bot mention from message
-                message.msg = message.msg.replace('@'+ROCKETCHAT_BOTNAME, '');
+                if (sendResponse)
+                    singleMessage.push({
+                        "content": message.msg.replace('@' + ROCKETCHAT_BOTNAME, ''),
+                        "role": "user"
+                    });
+            } else {
+                singleMessage.push({
+                    "content": message.msg,
+                    "role": "user"
+                });
+            }
+        } else {
+            messages.push({
+                "content": message.msg,
+                "role": "user"
+            })
         }
 
         if(!sendResponse) return;
@@ -60,12 +76,7 @@ const processMessages = async (err, message, messageOptions) => {
 
         // send message to jan model
         await axios.post(JAN_HOST + '/v1/chat/completions', {
-            "messages": [
-                {
-                    "content": message.msg,
-                    "role": "user"
-                }
-            ],
+            "messages": singleMessage.length > 0 ? singleMessage : messages,
             "model": JAN_MODEL,
             "stream": true,
             "max_tokens": 2048,
@@ -88,6 +99,11 @@ const processMessages = async (err, message, messageOptions) => {
 
         // remove <s> and </s> tags
         msg = msg.replace("</s>", '');
+
+        messages.push( {
+            "content": msg,
+            "role": "system"
+        });
 
         // send response message
         await driver.sendToRoomId(msg, message.rid);
