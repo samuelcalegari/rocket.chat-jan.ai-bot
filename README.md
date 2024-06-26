@@ -21,6 +21,8 @@ Provide a chatbot for the Rocket.Chat platform that can interact with the Jan.ai
 - [x] Start project with the command 
 ```npm start```
 
+## Screenshots
+![screenshot.png](img/screenshot.png)
 
 ## Licence
 
