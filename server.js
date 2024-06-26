@@ -13,6 +13,12 @@ const JAN_HOST = process.env.JAN_HOST;
 const JAN_MODEL = process.env.JAN_MODEL;
 let myUserId;
 const messages = [];
+const waitingMessages = [
+    'Je vais vous répondre dans un instant 😎',
+    'Je suis en train de chercher une réponse 🔎',
+    'Je réfléchis... 🧠',
+    'J\'active mes neurones 🤯',
+];
 
 // Bot configuration
 const runbot = async () => {
@@ -60,7 +66,10 @@ const processMessages = async (err, message, messageOptions) => {
                 });
             }
         } else {
-            messages.push({
+            if(messages[message.u._id ] === undefined) {
+                messages[message.u._id ] = [];
+            }
+            messages[message.u._id ].push({
                 "content": message.msg,
                 "role": "user"
             })
@@ -72,11 +81,11 @@ const processMessages = async (err, message, messageOptions) => {
         const roomname = await driver.getRoomName(message.rid);
 
         // send waiting message
-        await driver.sendToRoomId("Je vais vous répondre dans un instant ...", message.rid);
+        await driver.sendToRoomId(waitingMessages[(Math.floor(Math.random() * waitingMessages.length))], message.rid);
 
         // send message to jan model
         await axios.post(JAN_HOST + '/v1/chat/completions', {
-            "messages": singleMessage.length > 0 ? singleMessage : messages,
+            "messages": singleMessage.length > 0 ? singleMessage : messages[message.u._id ],
             "model": JAN_MODEL,
             "stream": true,
             "max_tokens": 2048,
@@ -100,10 +109,12 @@ const processMessages = async (err, message, messageOptions) => {
         // remove <s> and </s> tags
         msg = msg.replace("</s>", '');
 
-        messages.push( {
-            "content": msg,
-            "role": "system"
-        });
+        if(singleMessage.length === 0) {
+            messages[message.u._id ].push({
+                "content": msg,
+                "role": "system"
+            });
+        }
 
         // send response message
         await driver.sendToRoomId(msg, message.rid);

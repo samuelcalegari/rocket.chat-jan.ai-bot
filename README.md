@@ -1,6 +1,6 @@
 # A Smart AI Chatbot for Rocket.Chat
 <p align="center">
-    <img src="https://img.shields.io/badge/version-1.3.3-blue">
+    <img src="https://img.shields.io/badge/version-1.0.0-blue">
     <img src="https://img.shields.io/badge/nodeJS-20.x-orange">
     <img src="https://img.shields.io/badge/license-ISC-green">
 </p>
