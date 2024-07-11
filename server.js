@@ -74,7 +74,7 @@ const processMessages = async (err, message, messageOptions) => {
                 messages[message.u._id].push({
                     "content": message.msg,
                     "role": "user"
-                })
+                },)
             }
         }
 
@@ -116,7 +116,7 @@ const processMessages = async (err, message, messageOptions) => {
             messages[message.u._id ].push({
                 "content": msg,
                 "role": "assistant"
-            });
+            },);
         }
 
         // send response message
