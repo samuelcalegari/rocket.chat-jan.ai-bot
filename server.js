@@ -60,19 +60,22 @@ const processMessages = async (err, message, messageOptions) => {
                         "role": "user"
                     });
             } else {
-                singleMessage.push({
-                    "content": message.msg,
-                    "role": "user"
-                });
+                if (sendResponse)
+                    singleMessage.push({
+                        "content": message.msg,
+                        "role": "user"
+                    });
             }
         } else {
-            if(messages[message.u._id ] === undefined) {
-                messages[message.u._id ] = [];
+            if(sendResponse) {
+                if (messages[message.u._id] === undefined) {
+                    messages[message.u._id] = [];
+                }
+                messages[message.u._id].push({
+                    "content": message.msg,
+                    "role": "user"
+                })
             }
-            messages[message.u._id ].push({
-                "content": message.msg,
-                "role": "user"
-            })
         }
 
         if(!sendResponse) return;
@@ -112,12 +115,14 @@ const processMessages = async (err, message, messageOptions) => {
         if(singleMessage.length === 0) {
             messages[message.u._id ].push({
                 "content": msg,
-                "role": "system"
+                "role": "assistant"
             });
         }
 
         // send response message
         await driver.sendToRoomId(msg, message.rid);
+
+        console.log(messages);
 
     }
 }
